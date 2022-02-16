@@ -2,9 +2,9 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.3.1
--- Dumped by pg_dump version 9.3.1
--- Started on 2022-02-16 09:57:01
+-- Dumped from database version 9.4.4
+-- Dumped by pg_dump version 9.4.4
+-- Started on 2022-02-16 15:15:21
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -13,6 +13,23 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
+--
+-- TOC entry 174 (class 3079 OID 11855)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2002 (class 0 OID 0)
+-- Dependencies: 174
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
 SET search_path = public, pg_catalog;
 
 SET default_tablespace = '';
@@ -20,7 +37,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- TOC entry 177 (class 1259 OID 394562)
+-- TOC entry 173 (class 1259 OID 16656)
 -- Name: user; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -28,26 +45,86 @@ CREATE TABLE "user" (
     id integer NOT NULL,
     username character varying(100) NOT NULL,
     online character varying(4),
-    socketid character varying(100)
+    socketid character varying(100),
+    password character varying(50)
 );
 
 
-ALTER TABLE public."user" OWNER TO postgres;
+ALTER TABLE "user" OWNER TO postgres;
 
 --
--- TOC entry 1949 (class 0 OID 394562)
--- Dependencies: 177
+-- TOC entry 172 (class 1259 OID 16654)
+-- Name: user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE user_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2003 (class 0 OID 0)
+-- Dependencies: 172
+-- Name: user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE user_id_seq OWNED BY "user".id;
+
+
+--
+-- TOC entry 1881 (class 2604 OID 16659)
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "user" ALTER COLUMN id SET DEFAULT nextval('user_id_seq'::regclass);
+
+
+--
+-- TOC entry 1994 (class 0 OID 16656)
+-- Dependencies: 173
 -- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY "user" (id, username, online, socketid) FROM stdin;
-2	ahmed	Y	\N
-1	mooksud	Y	cKioU_NwC3ytCPL5AAAB
-3	moksud@gmail.com	Y	1
+COPY "user" (id, username, online, socketid, password) FROM stdin;
 \.
 
 
--- Completed on 2022-02-16 09:57:01
+--
+-- TOC entry 2004 (class 0 OID 0)
+-- Dependencies: 172
+-- Name: user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('user_id_seq', 1, false);
+
+
+--
+-- TOC entry 1883 (class 2606 OID 16661)
+-- Name: user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "user"
+    ADD CONSTRAINT user_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2001 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2022-02-16 15:15:21
 
 --
 -- PostgreSQL database dump complete

@@ -30,89 +30,89 @@ app.use(cosrs());
         /**
         * get the user's Chat list
         */
-        socket.on('chat-list', async (userId) => {
+        // socket.on('chat-list', async (userId) => {
 
-           let chatListResponse = {};   
+        //    let chatListResponse = {};   
            
-            if (userId === '' && (typeof userId !== 'string' || typeof userId !== 'number')) {
+        //     if (userId === '' && (typeof userId !== 'string' || typeof userId !== 'number')) {
 
-                chatListResponse.error = true;
-                chatListResponse.message = `User does not exits.`;
+        //         chatListResponse.error = true;
+        //         chatListResponse.message = `User does not exits.`;
                 
-                io.emit('chat-list-response',chatListResponse);
-            }else{
-                const result = await model.getChatList(userId, socket.id);
-                io.to(socket.id).emit('chat-list-response', {
-                    error: result !== null ? false : true,
-                    singleUser: false,
-                    chatList: result.chatlist
-                });
+        //         io.emit('chat-list-response',chatListResponse);
+        //     }else{
+        //         const result = await model.getChatList(userId, socket.id);
+        //         io.to(socket.id).emit('chat-list-response', {
+        //             error: result !== null ? false : true,
+        //             singleUser: false,
+        //             chatList: result.chatlist
+        //         });
 
-                socket.broadcast.emit('chat-list-response', {
-                    error: result !== null ? false : true,
-                    singleUser: true,
-                    chatList: result.userinfo
-                });
-            }
-        });
+        //         socket.broadcast.emit('chat-list-response', {
+        //             error: result !== null ? false : true,
+        //             singleUser: true,
+        //             chatList: result.userinfo
+        //         });
+        //     }
+        // });
         
         /**
         * send the messages to the user
         */
-        socket.on('add-message', async (data) => {
+        // socket.on('add-message', async (data) => {
             
-            if (data.message === '') {
+        //     if (data.message === '') {
                 
-                io.to(socket.id).emit(`add-message-response`,`Message cant be empty`); 
+        //         io.to(socket.id).emit(`add-message-response`,`Message cant be empty`); 
 
-            }else if(data.fromUserId === ''){
+        //     }else if(data.fromUserId === ''){
                 
-                io.to(socket.id).emit(`add-message-response`,`Unexpected error, Login again.`); 
+        //         io.to(socket.id).emit(`add-message-response`,`Unexpected error, Login again.`); 
 
-            }else if(data.toUserId === ''){
+        //     }else if(data.toUserId === ''){
                 
-                io.to(socket.id).emit(`add-message-response`,`Select a user to chat.`); 
+        //         io.to(socket.id).emit(`add-message-response`,`Select a user to chat.`); 
 
-            }else{                    
-                let toSocketId = data.toSocketId;
-                const sqlResult = await model.insertMessages({
-                    fromUserId: data.fromUserId,
-                    toUserId: data.toUserId,
-                    message: data.message
-                });
-                io.to(toSocketId).emit(`add-message-response`, data); 
-            }               
-        });
+        //     }else{                    
+        //         let toSocketId = data.toSocketId;
+        //         const sqlResult = await model.insertMessages({
+        //             fromUserId: data.fromUserId,
+        //             toUserId: data.toUserId,
+        //             message: data.message
+        //         });
+        //         io.to(toSocketId).emit(`add-message-response`, data); 
+        //     }               
+        // });
 
 
         /**
         * Logout the user
         */
-        socket.on('logout', async () => {
-            const isLoggedOut = await model.logoutUser(socket.id);
-            io.to(socket.id).emit('logout-response',{
-                error : false
-            });
-            socket.disconnect();
-        });
+        // socket.on('logout', async () => {
+        //     const isLoggedOut = await model.logoutUser(socket.id);
+        //     io.to(socket.id).emit('logout-response',{
+        //         error : false
+        //     });
+        //     socket.disconnect();
+        // });
 
 
         /**
         * sending the disconnected user to all socket users. 
         */
-        socket.on('disconnect',async ()=>{
-            const isLoggedOut = await model.logoutUser(socket.id);
-            setTimeout(async ()=>{
-                const isLoggedOut = await model.isUserLoggedOut(socket.id);
-                if (isLoggedOut && isLoggedOut !== null) {
-                    socket.broadcast.emit('chat-list-response', {
-                        error: false,
-                        userDisconnected: true,
-                        socketId: socket.id
-                    });
-                }
-            },1000);
-        });
+        // socket.on('disconnect',async ()=>{
+        //     const isLoggedOut = await model.logoutUser(socket.id);
+        //     setTimeout(async ()=>{
+        //         const isLoggedOut = await model.isUserLoggedOut(socket.id);
+        //         if (isLoggedOut && isLoggedOut !== null) {
+        //             socket.broadcast.emit('chat-list-response', {
+        //                 error: false,
+        //                 userDisconnected: true,
+        //                 socketId: socket.id
+        //             });
+        //         }
+        //     },1000);
+        // });
 
     });
 
@@ -120,28 +120,28 @@ app.get('/', (req, res, next) => {
     res.send('Welcome to the express server...');
 });
 
-app.post('/usernameCheck',async (request,response) =>{
-    const username = request.body.username;
-    if (username === "" || username === undefined || username === null) {
-        response.status(412).json({
-            error : true,
-            message : `username cant be empty.`
-        });
-    } else {
-        const data = await model.userNameCheck(username.toLowerCase());
-        if (data[0]['count'] > 0) {
-            response.status(401).json({
-                error:true,
-                message: 'This username is alreday taken.'
-            });
-        } else {
-            response.status(200).json({
-                error:false,
-                message: 'This username is available.'
-            });
-        }
-    }
-});		
+// app.post('/usernameCheck',async (request,response) =>{
+//     const username = request.body.username;
+//     if (username === "" || username === undefined || username === null) {
+//         response.status(412).json({
+//             error : true,
+//             message : `username cant be empty.`
+//         });
+//     } else {
+//         const data = await model.userNameCheck(username.toLowerCase());
+//         if (data[0]['count'] > 0) {
+//             response.status(401).json({
+//                 error:true,
+//                 message: 'This username is alreday taken.'
+//             });
+//         } else {
+//             response.status(200).json({
+//                 error:false,
+//                 message: 'This username is available.'
+//             });
+//         }
+//     }
+// });		
 
 app.post('/registerUser', async (request,response) => {     
     const registrationResponse = {}

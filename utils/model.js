@@ -3,7 +3,7 @@ const Pool = require('pg').Pool
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'api_test',
+  database: 'test',
   password: 'root',
   port: 5432,
 })
@@ -20,16 +20,16 @@ class Model {
     if (clause) query += clause;
     return this.pool.query(query);
   }
-
+  async userNameCheck (username){
+		return await this.pool.query(`SELECT count(username) as count FROM user WHERE LOWER(username) = ?`, `${username}`);
+  }
   async registerUser(params){		
 		try {
-			const userexist = await this.pool.query(`SELECT "id","username" FROM "user" WHERE LOWER("username") = $1`, [params.username]);
-			console.log(userexist);return 1;
-			if(userexist.length){
-				console.log('User exists'); return 1;
-			};
-			return 0;
-			//return await this.pool.query("INSERT INTO user (`username`,`password`,`online`) VALUES (?,?,?)", [params['username'],params['password'],'Y']);
+			const userexist = await this.pool.query(`SELECT "id","username" FROM "user" WHERE LOWER("username") = $1`, [params.username]);						
+			if(userexist.rowCount)return 'User exists';			
+			const result = await this.pool.query(`INSERT INTO "user" ("username","password","online") VALUES ($1,$2,$3)`, [params['username'],params['password'],'Y']);
+			console.log(result);
+			return result;
 		} catch (error) {
 			console.error(error);
 			return null;

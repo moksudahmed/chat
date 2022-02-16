@@ -1,0 +1,26 @@
+{
+  "name": "chatapp_server",
+  "version": "1.0.0",
+  "description": "Chat App Server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js",
+    "dev:debug": "nodemon app.js --inspect"
+  },
+  "author": "Parth Kamaria",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "mysql": "^2.15.0",
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.15",
+    "pg": "^8.7.3",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/socket.io": "^3.0.2"
+  }
+}
